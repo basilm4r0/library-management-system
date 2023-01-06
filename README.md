@@ -1,9 +1,17 @@
 # COMP333 Databese Systems project tasks
 
 
-- [x] 1) database table description (deadline 27/12/2022)
-- [ ] 1) user interface design (deadline 27/12/2022)
-- [ ] 2) mysql database design (deadline 28/12/2022)
-- [ ] 3) user interface implementation (deadline 29/12/2022)
-- [ ] 4) program logic implementation (deadline 30/12/2022)
-- [ ] 5) mysql database integration (deadline 1/1/2022)
+- [x] Database table description
+- [x] Mysql database design
+- [x] Initial user interface implementation
+- [x] Initial program logic implementation (Insert resource)
+- [ ] Full program UI design
+	- [ ] Full db viewing capability (information from multiple tables)
+	- [ ] Full edit capability (Resources, Creators, Borrowing, etc)
+	- [ ] Full search capability
+	- [ ] Admin login page + user viewing mode
+- [ ] Full program logic imp
+	- [ ] Full db viewing capability (information from multiple tables)
+	- [ ] Full edit capability (Resources, Creators, Borrowing, etc)
+	- [ ] Full search capability
+	- [ ] Admin login page + user viewing modelementation
