@@ -29,7 +29,9 @@ class MainApp(QMainWindow, FORM_CLASS):
         query = QSqlQuery()
         query.exec_("SELECT * FROM Resources")
         model.setQuery(query)
-        self.tableView_2.setModel(model)
+        self.tableView_2.setModel(
+            model
+        )  # Change to manual data reading in the future
 
     def Read_Books(self):
         model = QSqlQueryModel()
