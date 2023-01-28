@@ -19,9 +19,21 @@ class MainApp(QMainWindow, FORM_CLASS):
         self.Read_Books()
 
     def Handle_Buttons(self):
-        self.pushButton.clicked.connect(self.Add_Resource)
-        self.pushButton_2.clicked.connect(self.Read_Resources)
-        self.pushButton_3.clicked.connect(self.Read_Books)
+        self.addResourceBtn.clicked.connect(self.Add_Resource)
+        self.readResourcesBtn.clicked.connect(self.Read_Resources)
+        self.readBooksBtn.clicked.connect(self.Read_Books)
+        self.addPageBtn.clicked.connect(self.Show_Add)
+        self.browsePageBtn.clicked.connect(self.Show_Browse)
+        self.searchPageBtn.clicked.connect(self.Show_Search)
+
+    def Show_Browse(self):
+        self.stackedWidget.setCurrentWidget(self.browse)
+
+    def Show_Search(self):
+        self.stackedWidget.setCurrentWidget(self.search)
+
+    def Show_Add(self):
+        self.stackedWidget.setCurrentWidget(self.add)
 
     # Method to read from database and display in QTableWidget
     def Read_Resources(self):
@@ -29,6 +41,7 @@ class MainApp(QMainWindow, FORM_CLASS):
         query = QSqlQuery()
         query.exec_("SELECT * FROM Resources")
         model.setQuery(query)
+        print(query.lastError().text())
         self.tableView_2.setModel(
             model
         )  # Change to manual data reading in the future
@@ -65,11 +78,16 @@ class MainApp(QMainWindow, FORM_CLASS):
             db.setDatabaseName("library")
             db.setUserName("user")
             db.setPassword("password")
-            db.open()
-            QMessageBox.information(
-                self, "Connection", "Connection Successful"
-            )
-            return True
+            if db.open():
+                QMessageBox.information(
+                    self, "Connection", "Connection Successful"
+                )
+                return True
+            else:
+                QMessageBox.information(
+                    self, "Connection", "Connection Failed"
+                )
+                return False
         except Exception as e:
             QMessageBox.information(
                 self, "Connection", f"Connection Failed: {e}"
