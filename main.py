@@ -49,8 +49,26 @@ class MainApp(QMainWindow, FORM_CLASS):
     def Read_Books(self):
         model = QSqlQueryModel()
         query = QSqlQuery()
-        query.exec_("SELECT * FROM Books")
+        query.exec_(
+            "SELECT Resources.Resource_ID, "
+            "Resources.Title, "
+            "Creators1.Name, "
+            "Books.Year_of_publication, "
+            "Books.Language, "
+            "Books.Publisher "
+            "FROM Resources "
+            "INNER JOIN Books "
+            "ON Resources.Resource_ID = Books.Resource_ID "
+            "INNER JOIN ( "
+            "SELECT Name, Creator_ID FROM Authors "
+            "UNION ALL "
+            "SELECT Name, Creator_ID FROM Collectives "
+            ") "
+            "AS Creators1 "
+            "ON Resources.Creator_ID = Creators1.Creator_ID"
+        )
         model.setQuery(query)
+        print(query.lastError().text())
         self.tableView.setModel(model)
 
     def Add_Resource(self):
