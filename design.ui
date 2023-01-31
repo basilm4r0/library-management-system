@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1484</width>
-    <height>1000</height>
+    <width>1401</width>
+    <height>902</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -115,19 +115,25 @@
       </property>
       <widget class="QWidget" name="browse">
        <layout class="QGridLayout" name="gridLayout_10">
-        <item row="0" column="0">
+        <item row="1" column="0">
          <widget class="QTabWidget" name="tabWidget">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
             <horstretch>1</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
           </property>
           <property name="tabShape">
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>0</number>
+           <number>6</number>
           </property>
           <widget class="QWidget" name="tab">
            <attribute name="title">
@@ -148,10 +154,22 @@
               </item>
               <item row="0" column="0" alignment="Qt::AlignRight">
                <widget class="QPushButton" name="readResourcesBtn">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="minimumSize">
                  <size>
-                  <width>100</width>
+                  <width>200</width>
                   <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>200</width>
+                  <height>16777215</height>
                  </size>
                 </property>
                 <property name="text">
@@ -182,10 +200,22 @@
               </item>
               <item row="0" column="0" alignment="Qt::AlignRight">
                <widget class="QPushButton" name="readBooksBtn">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="minimumSize">
                  <size>
-                  <width>100</width>
+                  <width>200</width>
                   <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>200</width>
+                  <height>16777215</height>
                  </size>
                 </property>
                 <property name="text">
@@ -216,9 +246,15 @@
               </item>
               <item row="0" column="0" alignment="Qt::AlignRight">
                <widget class="QPushButton" name="readEssaysBtn">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
                 <property name="minimumSize">
                  <size>
-                  <width>100</width>
+                  <width>200</width>
                   <height>0</height>
                  </size>
                 </property>
@@ -252,7 +288,7 @@
                <widget class="QPushButton" name="readArticlesBtn">
                 <property name="minimumSize">
                  <size>
-                  <width>100</width>
+                  <width>200</width>
                   <height>0</height>
                  </size>
                 </property>
@@ -286,7 +322,7 @@
                <widget class="QPushButton" name="readPeriodicalsBtn">
                 <property name="minimumSize">
                  <size>
-                  <width>100</width>
+                  <width>200</width>
                   <height>0</height>
                  </size>
                 </property>
@@ -309,18 +345,18 @@
               <property name="spacing">
                <number>10</number>
               </property>
-              <item row="1" column="0">
+              <item row="2" column="0">
                <widget class="QTableView" name="tableView_6">
                 <attribute name="horizontalHeaderDefaultSectionSize">
                  <number>200</number>
                 </attribute>
                </widget>
               </item>
-              <item row="0" column="0" alignment="Qt::AlignRight">
+              <item row="1" column="0" alignment="Qt::AlignRight">
                <widget class="QPushButton" name="readIssuesBtn">
                 <property name="minimumSize">
                  <size>
-                  <width>100</width>
+                  <width>200</width>
                   <height>0</height>
                  </size>
                 </property>
@@ -330,6 +366,115 @@
                </widget>
               </item>
              </layout>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="tab_7">
+           <attribute name="title">
+            <string>Authors</string>
+           </attribute>
+           <layout class="QGridLayout" name="gridLayout_18">
+            <item row="0" column="0">
+             <layout class="QHBoxLayout" name="horizontalLayout">
+              <item>
+               <spacer name="horizontalSpacer">
+                <property name="orientation">
+                 <enum>Qt::Horizontal</enum>
+                </property>
+                <property name="sizeType">
+                 <enum>QSizePolicy::MinimumExpanding</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>10</width>
+                  <height>20</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item>
+               <widget class="QPushButton" name="readCreatorsBtn">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>100</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>200</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>All</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="readAuthorsBtn">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>100</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>200</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Authors</string>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <widget class="QPushButton" name="readCollectivesBtn">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="minimumSize">
+                 <size>
+                  <width>100</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>200</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Collectives</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
+            </item>
+            <item row="1" column="0">
+             <widget class="QTableView" name="tableView_7">
+              <attribute name="horizontalHeaderDefaultSectionSize">
+               <number>200</number>
+              </attribute>
+             </widget>
             </item>
            </layout>
           </widget>
@@ -483,7 +628,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1484</width>
+     <width>1401</width>
      <height>30</height>
     </rect>
    </property>
