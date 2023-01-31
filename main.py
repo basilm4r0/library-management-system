@@ -92,6 +92,7 @@ class MainApp(QMainWindow, FORM_CLASS):
         )
         model.setQuery(query)
         print(query.lastError().text())
+        self.tableView.setSortingEnabled(True)
         self.tableView_2.setModel(model)
 
     def Read_Essays(self):
@@ -117,6 +118,7 @@ class MainApp(QMainWindow, FORM_CLASS):
         )
         model.setQuery(query)
         print(query.lastError().text())
+        self.tableView.setSortingEnabled(True)
         self.tableView_3.setModel(model)
 
     def Read_Articles(self):
@@ -142,6 +144,7 @@ class MainApp(QMainWindow, FORM_CLASS):
         )
         model.setQuery(query)
         print(query.lastError().text())
+        self.tableView.setSortingEnabled(True)
         self.tableView_4.setModel(model)
 
     def Read_Periodicals(self):
@@ -158,6 +161,7 @@ class MainApp(QMainWindow, FORM_CLASS):
         )
         model.setQuery(query)
         print(query.lastError().text())
+        self.tableView.setSortingEnabled(True)
         self.tableView_5.setModel(model)
 
     def Read_Issues(self):
@@ -178,6 +182,7 @@ class MainApp(QMainWindow, FORM_CLASS):
         )
         model.setQuery(query)
         print(query.lastError().text())
+        self.tableView.setSortingEnabled(True)
         self.tableView_6.setModel(model)
 
     def Add_Resource(self):
