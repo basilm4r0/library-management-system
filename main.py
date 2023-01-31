@@ -1,7 +1,8 @@
 import sys
 from os import path
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox
+
+# from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 from PyQt5.uic import loadUiType
 from PyQt5.QtSql import QSqlDatabase, QSqlQueryModel, QSqlQuery
 
@@ -17,14 +18,22 @@ class MainApp(QMainWindow, FORM_CLASS):
         self.Connect_To_DB()
         self.Read_Resources()
         self.Read_Books()
+        self.Read_Essays()
+        self.Read_Articles()
+        self.Read_Periodicals()
+        self.Read_Issues()
 
     def Handle_Buttons(self):
-        self.addResourceBtn.clicked.connect(self.Add_Resource)
-        self.readResourcesBtn.clicked.connect(self.Read_Resources)
-        self.readBooksBtn.clicked.connect(self.Read_Books)
-        self.addPageBtn.clicked.connect(self.Show_Add)
         self.browsePageBtn.clicked.connect(self.Show_Browse)
         self.searchPageBtn.clicked.connect(self.Show_Search)
+        self.addPageBtn.clicked.connect(self.Show_Add)
+        self.readResourcesBtn.clicked.connect(self.Read_Resources)
+        self.readBooksBtn.clicked.connect(self.Read_Books)
+        self.readEssaysBtn.clicked.connect(self.Read_Essays)
+        self.readArticlesBtn.clicked.connect(self.Read_Articles)
+        self.readPeriodicalsBtn.clicked.connect(self.Read_Periodicals)
+        self.readIssuesBtn.clicked.connect(self.Read_Issues)
+        self.addResourceBtn.clicked.connect(self.Add_Resource)
 
     def Show_Browse(self):
         self.stackedWidget.setCurrentWidget(self.browse)
@@ -37,12 +46,31 @@ class MainApp(QMainWindow, FORM_CLASS):
 
     # Method to read from database and display in QTableWidget
     def Read_Resources(self):
+        self.model = TableModel(data)
+        self.proxyModel = QSortFilterProxyModel()
+        self.proxyModel.setSourceModel(self.model)
+        self.table.setSortingEnabled(True)
+        self.table.setModel(self.proxyModel)
+
         model = QSqlQueryModel()
         query = QSqlQuery()
-        query.exec_("SELECT * FROM Resources")
+        query.exec_(
+            "SELECT Resources.Resource_ID, "
+            "Resources.Title, "
+            "Creators1.Name "
+            "FROM Resources "
+            "INNER JOIN ( "
+            "SELECT Name, Creator_ID FROM Authors "
+            "UNION ALL "
+            "SELECT Name, Creator_ID FROM Collectives "
+            ") "
+            "AS Creators1 "
+            "ON Resources.Creator_ID = Creators1.Creator_ID"
+        )
+
         model.setQuery(query)
         print(query.lastError().text())
-        self.tableView_2.setModel(
+        self.tableView.setModel(
             model
         )  # Change to manual data reading in the future
 
@@ -53,7 +81,7 @@ class MainApp(QMainWindow, FORM_CLASS):
             "SELECT Resources.Resource_ID, "
             "Resources.Title, "
             "Creators1.Name, "
-            "Books.Year_of_publication, "
+            "Books.Date_of_publication, "
             "Books.Language, "
             "Books.Publisher "
             "FROM Resources "
@@ -69,7 +97,93 @@ class MainApp(QMainWindow, FORM_CLASS):
         )
         model.setQuery(query)
         print(query.lastError().text())
-        self.tableView.setModel(model)
+        self.tableView_2.setModel(model)
+
+    def Read_Essays(self):
+        model = QSqlQueryModel()
+        query = QSqlQuery()
+        query.exec_(
+            "SELECT Resources.Resource_ID, "
+            "Resources.Title, "
+            "Creators1.Name, "
+            "Essays.Date_of_publication, "
+            "Essays.Language, "
+            "Essays.Publisher "
+            "FROM Resources "
+            "INNER JOIN Essays "
+            "ON Resources.Resource_ID = Essays.Resource_ID "
+            "INNER JOIN ( "
+            "SELECT Name, Creator_ID FROM Authors "
+            "UNION ALL "
+            "SELECT Name, Creator_ID FROM Collectives "
+            ") "
+            "AS Creators1 "
+            "ON Resources.Creator_ID = Creators1.Creator_ID"
+        )
+        model.setQuery(query)
+        print(query.lastError().text())
+        self.tableView_3.setModel(model)
+
+    def Read_Articles(self):
+        model = QSqlQueryModel()
+        query = QSqlQuery()
+        query.exec_(
+            "SELECT Resources.Resource_ID, "
+            "Resources.Title, "
+            "Creators1.Name, "
+            "Articles.Date_of_publication, "
+            "Articles.Language, "
+            "Articles.Publisher "
+            "FROM Resources "
+            "INNER JOIN Articles "
+            "ON Resources.Resource_ID = Articles.Resource_ID "
+            "INNER JOIN ( "
+            "SELECT Name, Creator_ID FROM Authors "
+            "UNION ALL "
+            "SELECT Name, Creator_ID FROM Collectives "
+            ") "
+            "AS Creators1 "
+            "ON Resources.Creator_ID = Creators1.Creator_ID"
+        )
+        model.setQuery(query)
+        print(query.lastError().text())
+        self.tableView_4.setModel(model)
+
+    def Read_Periodicals(self):
+        model = QSqlQueryModel()
+        query = QSqlQuery()
+        query.exec_(
+            "SELECT Periodical_ID, "
+            "Name, "
+            "Publisher, "
+            "Start_date, "
+            "End_date, "
+            "Language "
+            "FROM Periodicals"
+        )
+        model.setQuery(query)
+        print(query.lastError().text())
+        self.tableView_5.setModel(model)
+
+    def Read_Issues(self):
+        model = QSqlQueryModel()
+        query = QSqlQuery()
+        query.exec_(
+            "SELECT Resources.Resource_ID, "
+            "Resources.Title, "
+            "Issues.Date_of_issue, "
+            "Periodicals.Name, "
+            "Periodicals.Language, "
+            "Periodicals.Publisher "
+            "FROM Resources "
+            "INNER JOIN Issues "
+            "ON Resources.Resource_ID = Issues.Resource_ID "
+            "INNER JOIN Periodicals "
+            "ON Issues.Periodical_ID = Periodicals.Periodical_ID"
+        )
+        model.setQuery(query)
+        print(query.lastError().text())
+        self.tableView_6.setModel(model)
 
     def Add_Resource(self):
         try:
@@ -105,6 +219,7 @@ class MainApp(QMainWindow, FORM_CLASS):
                 QMessageBox.information(
                     self, "Connection", "Connection Failed"
                 )
+                sys.exit(1)
                 return False
         except Exception as e:
             QMessageBox.information(

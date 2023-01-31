@@ -127,7 +127,7 @@
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <widget class="QWidget" name="tab">
            <attribute name="title">
@@ -140,7 +140,7 @@
                <number>10</number>
               </property>
               <item row="1" column="0">
-               <widget class="QTableView" name="tableView_2">
+               <widget class="QTableView" name="tableView">
                 <attribute name="horizontalHeaderDefaultSectionSize">
                  <number>200</number>
                 </attribute>
@@ -174,7 +174,7 @@
                <number>10</number>
               </property>
               <item row="1" column="0">
-               <widget class="QTableView" name="tableView">
+               <widget class="QTableView" name="tableView_2">
                 <attribute name="horizontalHeaderDefaultSectionSize">
                  <number>200</number>
                 </attribute>

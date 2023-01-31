@@ -28,7 +28,7 @@ CREATE TABLE Books (
   Book_ID int NOT NULL AUTO_INCREMENT,
   Resource_ID int NOT NULL,
   Publisher varchar(32) ,
-  Year_of_publication year,
+  Date_of_publication date,
   Language varchar(15),
   PRIMARY KEY (Book_ID),
 FOREIGN KEY (Resource_ID) REFERENCES Resources (Resource_ID));
@@ -76,23 +76,23 @@ FOREIGN KEY (Resource_ID) REFERENCES Resources (Resource_ID));
 
 
 CREATE TABLE Periodicals (
-  PID int NOT NULL AUTO_INCREMENT,
+  Periodical_ID int NOT NULL AUTO_INCREMENT,
   Name varchar(32) ,
   Publisher varchar(32) ,
   Language varchar(15) ,
-  Date_of_running date ,
-  PRIMARY KEY (PID)
+  Start_date date ,
+  End_date date ,
+  PRIMARY KEY (Periodical_ID)
 );
 
 
-CREATE TABLE Issue (
-  IID int NOT NULL AUTO_INCREMENT,
+CREATE TABLE Issues (
+  Issue_ID int NOT NULL AUTO_INCREMENT,
   Resource_ID int NOT NULL,
-  Title varchar(32) ,
   Date_of_Issue date ,
-  PID int default NULL,
-  PRIMARY KEY (IID),
-  FOREIGN KEY (PID) REFERENCES Periodicals (PID),
+  Periodical_ID int default NULL,
+  PRIMARY KEY (Issue_ID),
+  FOREIGN KEY (Periodical_ID) REFERENCES Periodicals (Periodical_ID),
 FOREIGN KEY (Resource_ID) REFERENCES Resources (Resource_ID));
 
   CREATE TABLE Borrowing (
@@ -118,5 +118,5 @@ INSERT INTO Authors (Creator_ID, Name, Gender, Date_of_birth)
 VALUES (1, 'Toni Morrison', 'Female', '1931-02-18');
 INSERT INTO Resources (Resource_ID, Description, Title, Creator_ID)
 VALUES (1, 'A novel about a slave', 'Beloved', 1);
-INSERT INTO Books (Book_ID, Resource_ID, Publisher, Year_of_publication, Language)
-Values (1, 1, 'Alfred A. Knopf', '1987', 'English');
+INSERT INTO Books (Book_ID, Resource_ID, Publisher, Date_of_publication, Language)
+Values (1, 1, 'Alfred A. Knopf', '1987-00-00', 'English');
