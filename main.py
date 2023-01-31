@@ -22,6 +22,7 @@ class MainApp(QMainWindow, FORM_CLASS):
         self.Read_Articles()
         self.Read_Periodicals()
         self.Read_Issues()
+        self.Read_Creators(0)
 
     def Handle_Buttons(self):
         self.browsePageBtn.clicked.connect(self.Show_Browse)
@@ -33,6 +34,9 @@ class MainApp(QMainWindow, FORM_CLASS):
         self.readArticlesBtn.clicked.connect(self.Read_Articles)
         self.readPeriodicalsBtn.clicked.connect(self.Read_Periodicals)
         self.readIssuesBtn.clicked.connect(self.Read_Issues)
+        self.readCreatorsBtn.clicked.connect(lambda: self.Read_Creators(0))
+        self.readAuthorsBtn.clicked.connect(lambda: self.Read_Creators(1))
+        self.readCollectivesBtn.clicked.connect(lambda: self.Read_Creators(2))
         self.addResourceBtn.clicked.connect(self.Add_Resource)
 
     def Show_Browse(self):
@@ -63,7 +67,7 @@ class MainApp(QMainWindow, FORM_CLASS):
         )
 
         model.setQuery(query)
-        print(query.lastError().text())
+        print(query.lastError().text(), end="")
         self.tableView.setSortingEnabled(True)
         self.tableView.setModel(
             model
@@ -91,8 +95,8 @@ class MainApp(QMainWindow, FORM_CLASS):
             "ON Resources.Creator_ID = Creators1.Creator_ID"
         )
         model.setQuery(query)
-        print(query.lastError().text())
-        self.tableView.setSortingEnabled(True)
+        print(query.lastError().text(), end="")
+        self.tableView_2.setSortingEnabled(True)
         self.tableView_2.setModel(model)
 
     def Read_Essays(self):
@@ -117,8 +121,8 @@ class MainApp(QMainWindow, FORM_CLASS):
             "ON Resources.Creator_ID = Creators1.Creator_ID"
         )
         model.setQuery(query)
-        print(query.lastError().text())
-        self.tableView.setSortingEnabled(True)
+        print(query.lastError().text(), end="")
+        self.tableView_3.setSortingEnabled(True)
         self.tableView_3.setModel(model)
 
     def Read_Articles(self):
@@ -143,8 +147,8 @@ class MainApp(QMainWindow, FORM_CLASS):
             "ON Resources.Creator_ID = Creators1.Creator_ID"
         )
         model.setQuery(query)
-        print(query.lastError().text())
-        self.tableView.setSortingEnabled(True)
+        print(query.lastError().text(), end="")
+        self.tableView_4.setSortingEnabled(True)
         self.tableView_4.setModel(model)
 
     def Read_Periodicals(self):
@@ -160,8 +164,8 @@ class MainApp(QMainWindow, FORM_CLASS):
             "FROM Periodicals"
         )
         model.setQuery(query)
-        print(query.lastError().text())
-        self.tableView.setSortingEnabled(True)
+        print(query.lastError().text(), end="")
+        self.tableView_5.setSortingEnabled(True)
         self.tableView_5.setModel(model)
 
     def Read_Issues(self):
@@ -181,9 +185,34 @@ class MainApp(QMainWindow, FORM_CLASS):
             "ON Issues.Periodical_ID = Periodicals.Periodical_ID"
         )
         model.setQuery(query)
-        print(query.lastError().text())
-        self.tableView.setSortingEnabled(True)
+        print(query.lastError().text(), end="")
+        self.tableView_6.setSortingEnabled(True)
         self.tableView_6.setModel(model)
+
+    def Read_Creators(self, mode):
+        model = QSqlQueryModel()
+        query = QSqlQuery()
+        if mode == 0:
+            query.exec_(
+                "SELECT Name, Creator_ID FROM Authors "
+                "UNION ALL "
+                "SELECT Name, Creator_ID FROM Collectives "
+            )
+        elif mode == 1:
+            query.exec_(
+                "SELECT Creator_ID, Name, Gender, Date_of_birth FROM Authors "
+            )
+        elif mode == 2:
+            query.exec_(
+                "SELECT Creator_ID, Name, Date_of_formation FROM Collectives "
+            )
+        else:
+            return 1
+        model.setQuery(query)
+        print(query.lastError().text(), end="")
+        self.tableView_7.setSortingEnabled(True)
+        self.tableView_7.setModel(model)
+        return 0
 
     def Add_Resource(self):
         try:
