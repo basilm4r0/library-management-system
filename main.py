@@ -46,12 +46,6 @@ class MainApp(QMainWindow, FORM_CLASS):
 
     # Method to read from database and display in QTableWidget
     def Read_Resources(self):
-        self.model = TableModel(data)
-        self.proxyModel = QSortFilterProxyModel()
-        self.proxyModel.setSourceModel(self.model)
-        self.table.setSortingEnabled(True)
-        self.table.setModel(self.proxyModel)
-
         model = QSqlQueryModel()
         query = QSqlQuery()
         query.exec_(
@@ -70,6 +64,7 @@ class MainApp(QMainWindow, FORM_CLASS):
 
         model.setQuery(query)
         print(query.lastError().text())
+        self.tableView.setSortingEnabled(True)
         self.tableView.setModel(
             model
         )  # Change to manual data reading in the future
