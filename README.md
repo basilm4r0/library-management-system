@@ -6,12 +6,12 @@
 - [x] Initial user interface implementation
 - [x] Initial program logic implementation (Insert resource)
 - [ ] Full program UI design
-	- [ ] Full db viewing capability (information from multiple tables)
+	- [x] Full db viewing capability (information from multiple tables)
 	- [ ] Full edit capability (Resources, Creators, Borrowing, etc)
 	- [ ] Full search capability
 	- [ ] Admin login page + user viewing mode
 - [ ] Full program logic imp
-	- [ ] Full db viewing capability (information from multiple tables)
+	- [x] Full db viewing capability (information from multiple tables)
 	- [ ] Full edit capability (Resources, Creators, Borrowing, etc)
 	- [ ] Full search capability
 	- [ ] Admin login page + user viewing modelementation
