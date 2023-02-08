@@ -4,7 +4,12 @@ from os import path
 # from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QApplication, QMainWindow, QMessageBox
 from PyQt5.uic import loadUiType
-from PyQt5.QtSql import QSqlDatabase, QSqlQueryModel, QSqlQuery
+from PyQt5.QtSql import (
+    QSqlDatabase,
+    QSqlQueryModel,
+    QSqlQuery,
+    QSqlRelationalTableModel,
+)
 
 FORM_CLASS, _ = loadUiType(path.join(path.dirname(__file__), "design.ui"))
 
@@ -23,11 +28,22 @@ class MainApp(QMainWindow, FORM_CLASS):
         self.Read_Periodicals()
         self.Read_Issues()
         self.Read_Creators(0)
+        self.Edit_Resources()
+        self.Edit_Books()
+        self.Edit_Essays()
+        self.Edit_Articles()
+        self.Edit_Periodicals()
+        self.Edit_Issues()
+        self.Edit_Creators(0)
+        self.stackedWidget.setCurrentWidget(self.browse)
 
     def Handle_Buttons(self):
+        # Main Side Bar
         self.browsePageBtn.clicked.connect(self.Show_Browse)
         self.searchPageBtn.clicked.connect(self.Show_Search)
         self.addPageBtn.clicked.connect(self.Show_Add)
+        self.editPageBtn.clicked.connect(self.Show_Edit)
+        # Browse Page Buttons
         self.readResourcesBtn.clicked.connect(self.Read_Resources)
         self.readBooksBtn.clicked.connect(self.Read_Books)
         self.readEssaysBtn.clicked.connect(self.Read_Essays)
@@ -37,6 +53,19 @@ class MainApp(QMainWindow, FORM_CLASS):
         self.readCreatorsBtn.clicked.connect(lambda: self.Read_Creators(0))
         self.readAuthorsBtn.clicked.connect(lambda: self.Read_Creators(1))
         self.readCollectivesBtn.clicked.connect(lambda: self.Read_Creators(2))
+        # Edit Page Buttons
+        self.readResourcesBtn_2.clicked.connect(self.Edit_Resources)
+        self.readBooksBtn_2.clicked.connect(self.Edit_Books)
+        self.readEssaysBtn_2.clicked.connect(self.Edit_Essays)
+        self.readArticlesBtn_2.clicked.connect(self.Edit_Articles)
+        self.readPeriodicalsBtn_2.clicked.connect(self.Edit_Periodicals)
+        self.readIssuesBtn_2.clicked.connect(self.Edit_Issues)
+        self.readCreatorsBtn_2.clicked.connect(lambda: self.Edit_Creators(0))
+        self.readAuthorsBtn_2.clicked.connect(lambda: self.Edit_Creators(1))
+        self.readCollectivesBtn_2.clicked.connect(
+            lambda: self.Edit_Creators(2)
+        )
+        # Add Page Buttons
         self.addResourceBtn.clicked.connect(self.Add_Resource)
 
     def Show_Browse(self):
@@ -48,54 +77,63 @@ class MainApp(QMainWindow, FORM_CLASS):
     def Show_Add(self):
         self.stackedWidget.setCurrentWidget(self.add)
 
+    def Show_Edit(self):
+        self.stackedWidget.setCurrentWidget(self.edit)
+
     # Method to read from database and display in QTableWidget
     def Read_Resources(self):
         model = QSqlQueryModel()
         query = QSqlQuery()
         query.exec_(
-            "SELECT Resources.Resource_ID, "
+            "SELECT Resources.Resource_ID AS ID, "
             "Resources.Title, "
-            "Creators1.Name "
+            "GROUP_CONCAT(Creators1.Name) AS `Authors(s)`, "
+            "Resources.Date_of_copyright AS `Publish Date`, "
+            "Resources.Dewey_decimal AS `Dewey Decimal` "
             "FROM Resources "
+            "INNER JOIN Resources_Creators "
+            "ON Resources.Resource_ID = Resources_Creators.Resource_ID "
             "INNER JOIN ( "
             "SELECT Name, Creator_ID FROM Authors "
             "UNION ALL "
             "SELECT Name, Creator_ID FROM Collectives "
             ") "
             "AS Creators1 "
-            "ON Resources.Creator_ID = Creators1.Creator_ID"
+            "ON Resources_Creators.Creator_ID = Creators1.Creator_ID "
+            "GROUP BY Resources.Resource_ID, Resources.Title"
         )
 
         model.setQuery(query)
-        print(query.lastError().text(), end="")
+        print(query.lastError().text())
         self.tableView.setSortingEnabled(True)
-        self.tableView.setModel(
-            model
-        )  # Change to manual data reading in the future
+        self.tableView.setModel(model)
 
     def Read_Books(self):
         model = QSqlQueryModel()
         query = QSqlQuery()
         query.exec_(
-            "SELECT Resources.Resource_ID, "
+            "SELECT Resources.Resource_ID AS ID, "
             "Resources.Title, "
-            "Creators1.Name, "
-            "Books.Date_of_publication, "
+            "GROUP_CONCAT(Creators1.Name) AS `Authors(s)`, "
+            "Resources.Date_of_copyright AS `Publish Date`, "
             "Books.Language, "
-            "Books.Publisher "
+            "Resources.Dewey_decimal AS `Dewey Decimal` "
             "FROM Resources "
             "INNER JOIN Books "
             "ON Resources.Resource_ID = Books.Resource_ID "
+            "INNER JOIN Resources_Creators "
+            "ON Resources.Resource_ID = Resources_Creators.Resource_ID "
             "INNER JOIN ( "
             "SELECT Name, Creator_ID FROM Authors "
             "UNION ALL "
             "SELECT Name, Creator_ID FROM Collectives "
             ") "
             "AS Creators1 "
-            "ON Resources.Creator_ID = Creators1.Creator_ID"
+            "ON Resources_Creators.Creator_ID = Creators1.Creator_ID "
+            "GROUP BY Resources.Resource_ID"
         )
         model.setQuery(query)
-        print(query.lastError().text(), end="")
+        print(query.lastError().text())
         self.tableView_2.setSortingEnabled(True)
         self.tableView_2.setModel(model)
 
@@ -103,25 +141,28 @@ class MainApp(QMainWindow, FORM_CLASS):
         model = QSqlQueryModel()
         query = QSqlQuery()
         query.exec_(
-            "SELECT Resources.Resource_ID, "
+            "SELECT Resources.Resource_ID AS ID, "
             "Resources.Title, "
-            "Creators1.Name, "
-            "Essays.Date_of_publication, "
+            "GROUP_CONCAT(Creators1.Name) AS `Author(s)`, "
+            "Resources.Date_of_copyright AS `Publish Date`, "
             "Essays.Language, "
-            "Essays.Publisher "
+            "Essays.Container_text AS Container "
             "FROM Resources "
             "INNER JOIN Essays "
             "ON Resources.Resource_ID = Essays.Resource_ID "
+            "INNER JOIN Resources_Creators "
+            "ON Resources.Resource_ID = Resources_Creators.Resource_ID "
             "INNER JOIN ( "
             "SELECT Name, Creator_ID FROM Authors "
             "UNION ALL "
             "SELECT Name, Creator_ID FROM Collectives "
             ") "
             "AS Creators1 "
-            "ON Resources.Creator_ID = Creators1.Creator_ID"
+            "ON Resources_Creators.Creator_ID = Creators1.Creator_ID "
+            "GROUP BY Resources.Resource_ID"
         )
         model.setQuery(query)
-        print(query.lastError().text(), end="")
+        print(query.lastError().text())
         self.tableView_3.setSortingEnabled(True)
         self.tableView_3.setModel(model)
 
@@ -129,25 +170,28 @@ class MainApp(QMainWindow, FORM_CLASS):
         model = QSqlQueryModel()
         query = QSqlQuery()
         query.exec_(
-            "SELECT Resources.Resource_ID, "
+            "SELECT Resources.Resource_ID AS ID, "
             "Resources.Title, "
-            "Creators1.Name, "
-            "Articles.Date_of_publication, "
+            "GROUP_CONCAT(Creators1.Name) AS `Author(s)`, "
+            "Resources.Date_of_copyright `Publish Date`, "
             "Articles.Language, "
-            "Articles.Publisher "
+            "Articles.Container_text AS Container "
             "FROM Resources "
             "INNER JOIN Articles "
             "ON Resources.Resource_ID = Articles.Resource_ID "
+            "INNER JOIN Resources_Creators "
+            "ON Resources.Resource_ID = Resources_Creators.Resource_ID "
             "INNER JOIN ( "
             "SELECT Name, Creator_ID FROM Authors "
             "UNION ALL "
             "SELECT Name, Creator_ID FROM Collectives "
             ") "
             "AS Creators1 "
-            "ON Resources.Creator_ID = Creators1.Creator_ID"
+            "ON Resources_Creators.Creator_ID = Creators1.Creator_ID "
+            "GROUP BY Resources.Resource_ID"
         )
         model.setQuery(query)
-        print(query.lastError().text(), end="")
+        print(query.lastError().text())
         self.tableView_4.setSortingEnabled(True)
         self.tableView_4.setModel(model)
 
@@ -155,16 +199,15 @@ class MainApp(QMainWindow, FORM_CLASS):
         model = QSqlQueryModel()
         query = QSqlQuery()
         query.exec_(
-            "SELECT Periodical_ID, "
+            "SELECT Periodical_ID AS `Periodical ID`, "
             "Name, "
-            "Publisher, "
-            "Start_date, "
-            "End_date, "
+            "Start_date AS `Start Date`, "
+            "End_date AS `End Date`, "
             "Language "
             "FROM Periodicals"
         )
         model.setQuery(query)
-        print(query.lastError().text(), end="")
+        print(query.lastError().text())
         self.tableView_5.setSortingEnabled(True)
         self.tableView_5.setModel(model)
 
@@ -172,12 +215,11 @@ class MainApp(QMainWindow, FORM_CLASS):
         model = QSqlQueryModel()
         query = QSqlQuery()
         query.exec_(
-            "SELECT Resources.Resource_ID, "
+            "SELECT Resources.Resource_ID AS ID, "
             "Resources.Title, "
-            "Issues.Date_of_issue, "
-            "Periodicals.Name, "
-            "Periodicals.Language, "
-            "Periodicals.Publisher "
+            "Issues.Date_of_issue AS `Date of Issue`, "
+            "Periodicals.Name AS `Periodical`, "
+            "Periodicals.Language "
             "FROM Resources "
             "INNER JOIN Issues "
             "ON Resources.Resource_ID = Issues.Resource_ID "
@@ -185,7 +227,7 @@ class MainApp(QMainWindow, FORM_CLASS):
             "ON Issues.Periodical_ID = Periodicals.Periodical_ID"
         )
         model.setQuery(query)
-        print(query.lastError().text(), end="")
+        print(query.lastError().text())
         self.tableView_6.setSortingEnabled(True)
         self.tableView_6.setModel(model)
 
@@ -194,24 +236,77 @@ class MainApp(QMainWindow, FORM_CLASS):
         query = QSqlQuery()
         if mode == 0:
             query.exec_(
-                "SELECT Name, Creator_ID FROM Authors "
+                "SELECT Name, Creator_ID AS `Creator ID` FROM Authors "
                 "UNION ALL "
-                "SELECT Name, Creator_ID FROM Collectives "
+                "SELECT Name, Creator_ID AS `Creator ID` FROM Collectives "
             )
         elif mode == 1:
             query.exec_(
-                "SELECT Creator_ID, Name, Gender, Date_of_birth FROM Authors "
+                "SELECT Creator_ID AS `Creator ID`, "
+                "Name, Gender, Date_of_birth AS `Date of Birth` FROM Authors "
             )
         elif mode == 2:
             query.exec_(
-                "SELECT Creator_ID, Name, Date_of_formation FROM Collectives "
+                "SELECT Creator_ID AS `Creator ID`, Name, "
+                "Date_of_formation AS `Date of Formation` FROM Collectives "
             )
         else:
             return 1
         model.setQuery(query)
-        print(query.lastError().text(), end="")
+        print(query.lastError().text())
         self.tableView_7.setSortingEnabled(True)
         self.tableView_7.setModel(model)
+        return 0
+
+    def Edit_Resources(self):
+        model = QSqlRelationalTableModel()
+        model.setTable("Resources")
+        self.tableView_8.setSortingEnabled(True)
+        self.tableView_8.setModel(model)
+        print(self.tableView_8.model().lastError().text())
+
+    def Edit_Books(self):
+        model = QSqlRelationalTableModel()
+        model.setTable("Books")
+        self.tableView_9.setSortingEnabled(True)
+        self.tableView_9.setModel(model)
+
+    def Edit_Essays(self):
+        model = QSqlRelationalTableModel()
+        model.setTable("Essays")
+        self.tableView_10.setSortingEnabled(True)
+        self.tableView_10.setModel(model)
+
+    def Edit_Articles(self):
+        model = QSqlRelationalTableModel()
+        model.setTable("Articles")
+        self.tableView_11.setSortingEnabled(True)
+        self.tableView_11.setModel(model)
+
+    def Edit_Periodicals(self):
+        model = QSqlRelationalTableModel()
+        model.setTable("Periodicals")
+        self.tableView_12.setSortingEnabled(True)
+        self.tableView_12.setModel(model)
+
+    def Edit_Issues(self):
+        model = QSqlRelationalTableModel()
+        model.setTable("Issues")
+        self.tableView_13.setSortingEnabled(True)
+        self.tableView_13.setModel(model)
+
+    def Edit_Creators(self, mode):
+        model = QSqlRelationalTableModel()
+        if mode == 0:
+            model.setTable("Creators")
+        elif mode == 1:
+            model.setTable("Authors")
+        elif mode == 2:
+            model.setTable("Collectives")
+        else:
+            return 1
+        self.tableView_14.setSortingEnabled(True)
+        self.tableView_14.setModel(model)
         return 0
 
     def Add_Resource(self):
