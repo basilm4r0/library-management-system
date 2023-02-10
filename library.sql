@@ -61,43 +61,38 @@ CREATE TABLE Copies (
   FOREIGN KEY (Resource_ID) REFERENCES Resources (Resource_ID));
 
 CREATE TABLE Books (
-  Book_ID int NOT NULL AUTO_INCREMENT,
   Resource_ID int NOT NULL,
   Language varchar(15),
-  PRIMARY KEY (Book_ID),
+  PRIMARY KEY (Resource_ID),
   FOREIGN KEY (Resource_ID) REFERENCES Resources (Resource_ID));
 
 CREATE TABLE Authors (
-  Author_ID int NOT NULL AUTO_INCREMENT,
   Creator_ID int not NULL,
   Name varchar(32) NOT NULL,
-  Gender varchar(10),
   Date_of_birth varchar(32),
-  PRIMARY KEY (Author_ID),
+  Gender varchar(10),
+  PRIMARY KEY (Creator_ID),
   FOREIGN KEY (Creator_ID) REFERENCES Creators (Creator_ID));
 
 CREATE TABLE Collectives (
-  Collective_ID int NOT NULL AUTO_INCREMENT,
   Creator_ID int not NULL,
   Name varchar(32),
   Date_of_formation varchar(32),
-  PRIMARY KEY (Collective_ID),
+  PRIMARY KEY (Creator_ID),
   FOREIGN KEY (Creator_ID) REFERENCES Creators (Creator_ID));
 
 CREATE TABLE Articles (
-  Article_ID int NOT NULL AUTO_INCREMENT,
   Resource_ID int NOT NULL,
   Language varchar(15),
   Container_text varchar(32),
-  PRIMARY KEY (Article_ID),
+  PRIMARY KEY (Resource_ID),
   FOREIGN KEY (Resource_ID) REFERENCES Resources (Resource_ID));
 
 CREATE TABLE Essays (
-  Essay_ID int NOT NULL AUTO_INCREMENT,
   Resource_ID int NOT NULL,
   Language varchar(15),
   Container_text varchar(32),
-  PRIMARY KEY (Essay_ID),
+  PRIMARY KEY (Resource_ID),
   FOREIGN KEY (Resource_ID) REFERENCES Resources (Resource_ID));
 
 CREATE TABLE Periodicals (
@@ -110,11 +105,10 @@ CREATE TABLE Periodicals (
 );
 
 CREATE TABLE Issues (
-  Issue_ID int NOT NULL AUTO_INCREMENT,
   Resource_ID int NOT NULL,
   Date_of_Issue varchar(32),
   Periodical_ID int default NULL,
-  PRIMARY KEY (Issue_ID),
+  PRIMARY KEY (Resource_ID),
   FOREIGN KEY (Periodical_ID) REFERENCES Periodicals (Periodical_ID),
   FOREIGN KEY (Resource_ID) REFERENCES Resources (Resource_ID));
 
@@ -125,16 +119,17 @@ CREATE TABLE Borrowing (
   Must_return_date date NOT NULL,
   Is_returned boolean NOT NULL,
   FOREIGN KEY (Borrower_ID) REFERENCES Borrowers (Borrower_ID),
+  FOREIGN KEY (Copy_ID) REFERENCES Copies (Copy_ID),
   PRIMARY KEY (Borrower_ID,Copy_ID,Borrow_date));
 
 CREATE TABLE Borrowed (
   Borrower_ID int NOT NULL,
-  Resource_ID int NOT NULL,
+  Copy_ID int NOT NULL,
   Borrow_date date NOT NULL,
   Return_date date NOT NULL,
   FOREIGN KEY (Borrower_ID) REFERENCES Borrowers (Borrower_ID),
-  FOREIGN KEY (Resource_ID) REFERENCES Resources (Resource_ID),
-  PRIMARY KEY (Borrower_ID,Resource_ID,Borrow_date));
+  FOREIGN KEY (Copy_ID) REFERENCES Copies (Copy_ID),
+  PRIMARY KEY (Borrower_ID,Copy_ID,Borrow_date));
 
 CREATE TABLE Publishers (
   Publisher_ID int NOT NULL AUTO_INCREMENT,
@@ -142,11 +137,11 @@ CREATE TABLE Publishers (
   PRIMARY KEY (Publisher_ID));
 
 CREATE TABLE Reserves (
-  Reservation_ID int NOT NULL AUTO_INCREMENT,
+  Borrower_ID int NOT NULL,
   Copy_ID int NOT NULL,
   Reserve_date date NOT NULL,
   end_date date NOT NULL,
-  PRIMARY KEY (Reservation_ID),
+  PRIMARY KEY (Borrower_ID,Copy_ID,Reserve_date),
   FOREIGN KEY (Copy_ID) REFERENCES Copies (Copy_ID));
 
 CREATE TABLE Waiting_List (
@@ -166,14 +161,18 @@ INSERT INTO Categories (Category_ID, Category_Name)
 VALUES (1, 'Magical Realism');
 INSERT INTO Resources_Categories (Category_ID, Resource_ID)
 VALUES (1, 1);
-INSERT INTO Books (Book_ID, Resource_ID, Language)
-Values (1, 1, 'English');
+INSERT INTO Books (Resource_ID, Language)
+Values (1, 'English');
 INSERT INTO Copies (Copy_ID, Resource_ID, Publisher_ID, Date_of_publication)
 VALUES (1, 1, 1, '1987-09-15');
 INSERT INTO Publishers (Publisher_ID, Name) VALUES (1, 'Alfred A. Knopf');
 INSERT INTO Borrowers (Borrower_ID, First_Name, Last_Name, Date_of_Birth, Phone_Number, Address)
 VALUES (1, 'John', 'Doe', '1990-1-1', '123-456-7890', 'Robert Robertson, 1234 NW Bobcat Lane, St. Robert, MO 65584-5678');
+INSERT INTO Borrowers (Borrower_ID, First_Name, Last_Name, Date_of_Birth, Phone_Number, Address)
+VALUES (2, 'Jane', 'Dane', '1990-1-1', '123-456-7890', 'Robert Robertson, 1234 NW Bobcat Lane, St. Robert, MO 65584-5678');
 INSERT INTO Users (User_ID, Borrower_ID, Email, Password)
 VALUES (1, 1,'johndoe@example.com', 'password');
 INSERT INTO Borrowing (Borrower_ID, Copy_ID, Borrow_date, Must_return_date, Is_returned)
 VALUES (1, 1, '2018-10-01', '2018-10-15', 0);
+INSERT INTO Borrowed (Borrower_ID, Copy_ID, Borrow_date, Return_Date)
+VALUES (1, 1, '2018-10-01', '2018-10-15');
